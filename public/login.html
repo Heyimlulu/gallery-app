@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gallery App</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body>
+    <div class="container mx-auto">
+      <div class="flex justify-center">
+        <form
+          id="passcodeForm"
+          method="POST"
+          action="/check-passcode"
+          class="text-center"
+        >
+          <h1 class="text-3xl font-bold mb-4">
+            Please enter the passcode to access the content.
+          </h1>
+          <div class="flex justify-center mb-4">
+            <input
+              type="text"
+              id="day"
+              name="day"
+              class="border rounded px-2 py-1 mr-2"
+              placeholder="DD"
+              maxlength="2"
+            />
+            <span>/</span>
+            <input
+              type="text"
+              id="month"
+              name="month"
+              class="border rounded px-2 py-1 mx-2"
+              placeholder="MM"
+              maxlength="2"
+            />
+            <span>/</span>
+            <input
+              type="text"
+              id="year"
+              name="year"
+              class="border rounded px-2 py-1 ml-2"
+              placeholder="YYYY"
+              maxlength="4"
+            />
+          </div>
+          <button
+            class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-full"
+          >
+            Submit
+          </button>
+        </form>
+      </div>
+    </div>
+  </body>
+  <script src="scripts/checkPasscode.js"></script>
+</html>

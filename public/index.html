@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gallery App</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+  </head>
+  <body>
+    <header class="bg-neutral-800 sticky top-0 left-0 w-full shadow-md py-4">
+      <div class="container px-4">
+        <h1 class="text-white text-xl font-semibold">Gallery App</h1>
+      </div>
+    </header>
+
+    <main id="gallery">
+      <div
+        class="columns-1 sm:columns-2 md:columns-3 lg:columns-4 xl:columns-5 gap-0"
+        id="imageGallery"
+      >
+        <!-- Display uploaded images here -->
+      </div>
+
+      <div
+        id="enlargedImageContainer"
+        class="hidden fixed top-0 left-0 w-full h-full bg-black bg-opacity-75 flex justify-center items-center"
+      >
+        <img id="enlargedImage" src="" alt="Enlarged Image" class="enlarged" />
+      </div>
+
+      <button
+        id="refreshButton"
+        class="fixed bottom-4 right-4 bg-neutral-800 hover:bg-neutral-900 text-white text-lg font-bold py-2 px-4 rounded-full shadow-md"
+      >
+        <i class="fa fa-rotate-right"></i>
+      </button>
+    </main>
+
+    <footer class="text-black text-center py-4">
+      <p>All rights reserved to the respective owners.</p>
+    </footer>
+  </body>
+  <script src="scripts/main.js"></script>
+</html>
