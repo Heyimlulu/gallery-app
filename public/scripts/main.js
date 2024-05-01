@@ -46,9 +46,9 @@ function refreshPage() {
 document
   .getElementById("enlargedImageContainer")
   .addEventListener("click", function (event) {
+    this.classList.add("hidden");
+    document.body.classList.remove("overflow-hidden"); // Re-enable scrolling
     if (event.target === this) {
-      this.classList.add("hidden");
-      document.body.classList.remove("overflow-hidden"); // Re-enable scrolling
     }
   });
 

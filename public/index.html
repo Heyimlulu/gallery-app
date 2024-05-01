@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Gallery App</title>
+    <link rel="Gallery App Icon" href="./favicon.ico" type="image/x-icon" />
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="css/style.css" />
     <link
@@ -42,7 +43,31 @@
     </main>
 
     <footer class="text-black text-center py-4">
-      <p>All rights reserved to the respective owners.</p>
+      <!-- Display this message on large screens -->
+      <p class="hidden lg:inline-block">
+        All rights reserved to the respective owners
+        <span> / </span>
+        Developed by
+        <a
+          href="https://github.com/Heyimlulu"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-blue-500 hover:underline"
+          >Lulu</a
+        >
+      </p>
+      <!-- Display this message on small screens -->
+      <p class="lg:hidden">All rights reserved to the respective owners</p>
+      <p class="lg:hidden">
+        Developed by
+        <a
+          href="https://github.com/Heyimlulu"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-blue-500 hover:underline"
+          >Lulu</a
+        >
+      </p>
     </footer>
   </body>
   <script src="scripts/main.js"></script>
