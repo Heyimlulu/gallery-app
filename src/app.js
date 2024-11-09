@@ -5,7 +5,7 @@ const app = express();
 const fs = require("fs");
 const path = require("path");
 
-const folderPath = "C:\\Users\\Lucas\\gallery-dl\\pixiv\\554102 40hara";
+const folderPath = "C:\\Users\\Lucas\\gallery-dl\\pinterest\\DTMarts\\Pomni";
 
 app.use(express.static("public"));
 app.use("/", express.static(folderPath));
@@ -35,32 +35,6 @@ app.get("/login", (req, res) =>
 );
 
 // API routes
-
-app.get("/check-session", (req, res) => {
-  if (req.session.userId) {
-    res.json({ success: true });
-  } else {
-    res.json({ success: false });
-  }
-});
-
-app.post("/check-passcode", (req, res) => {
-  const { day, month, year } = req.body;
-
-  if (day === "26" && month === "12" && year === "2023") {
-    req.session.userId = uuid.v4();
-    res.json({
-      success: true,
-      message: "Welcome to the gallery!",
-      redirect: "/",
-    });
-  } else {
-    res.status(401).json({
-      success: false,
-      message: "Incorrect passcode.",
-    });
-  }
-});
 
 app.get("/images", (req, res) => {
   const page = parseInt(req.query.page) || 1;

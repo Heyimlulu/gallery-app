@@ -22,13 +22,6 @@ function renderGallery(images) {
   });
 }
 
-// Function to check if scroll reached bottom of the page
-// function isBottom() {
-//   return (
-//     window.innerHeight + window.scrollY >= document.body.offsetHeight - 100
-//   );
-// }
-
 function showEnlarged(image) {
   const enlargedImage = document.getElementById("enlargedImage");
   enlargedImage.src = image.src;
@@ -52,24 +45,5 @@ document
     }
   });
 
-// window.addEventListener("scroll", function () {
-//   if (isBottom()) {
-//     fetchImages();
-//   }
-// });
-
-// check for session
-fetch("/check-session")
-  .then((response) => response.json())
-  .then((data) => {
-    if (!data.success) {
-      alert("You need to enter the passcode to access the gallery.");
-      window.location.replace("/login");
-    } else {
-      document
-        .getElementById("refreshButton")
-        .addEventListener("click", refreshPage);
-      fetchImages();
-    }
-  })
-  .catch((error) => console.error("Error checking session:", error));
+document.getElementById("refreshButton").addEventListener("click", refreshPage);
+fetchImages();
