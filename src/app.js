@@ -4,11 +4,13 @@ const uuid = require("uuid");
 const app = express();
 const fs = require("fs");
 const path = require("path");
+const { PrismaClient } = require("@prisma/client");
+const mime = require("mime-types");
+const util = require("util");
 
-const folderPath = "C:\\Users\\Lucas\\gallery-dl\\pinterest\\DTMarts\\Pomni";
+const prisma = new PrismaClient();
 
 app.use(express.static("public"));
-app.use("/", express.static(folderPath));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(
@@ -27,60 +29,120 @@ app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
 
-// HTML routes
-
-app.get("/", (req, res) => res.redirect("/login"));
-app.get("/login", (req, res) =>
-  res.sendFile(path.join(__dirname, "..", "public", "login.html"))
-);
-
 // API routes
 
-app.get("/images", (req, res) => {
-  const page = parseInt(req.query.page) || 1;
-  const perPage = parseInt(req.query.perPage) || 10;
+app.get("/one", async (req, res) => {
+  try {
+    // Get total count of images
+    const totalImages = await prisma.image.count();
 
-  fs.readdir(folderPath, (err, files) => {
-    if (err) {
-      console.error(err);
-      return res.status(500).send("An error occurred");
-    }
+    // Generate random skip amount
+    const randomSkip = Math.floor(Math.random() * totalImages);
 
-    const totalPages = Math.ceil(files.length / perPage);
-
-    const startIndex = (page - 1) * perPage;
-    const endIndex = Math.min(startIndex + perPage, files.length);
-
-    const images = files.slice(startIndex, endIndex).map((file) => {
-      return {
-        url: file,
-        name: file,
-      };
+    const image = await prisma.image.findFirst({
+      skip: randomSkip,
+      select: {
+        data: true,
+        mimeType: true,
+        filename: true,
+      },
     });
 
-    res.json({ images, totalPages });
-  });
+    if (!image) {
+      return res.status(404).json({ error: "No images found" });
+    }
+
+    const imageData = {
+      url: `data:${image.mimeType};base64,${image.data.toString("base64")}`,
+      filename: image.filename,
+    };
+
+    res.json({ image: imageData });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("An error occurred");
+  }
 });
 
-app.get("/random-images", (req, res) => {
-  const perPage = parseInt(req.query.perPage) || 10;
+app.get("/many", async (req, res) => {
+  const perPage = parseInt(req.query.perPage) || 30;
 
-  fs.readdir(folderPath, (err, files) => {
-    if (err) {
-      console.error(err);
-      return res.status(500).send("An error occurred");
-    }
-
-    const imageFiles = files.filter((file) => /\.(png|jpg|jpeg)$/i.test(file));
-    const shuffledFiles = imageFiles.sort(() => Math.random() - 0.5);
-
-    const images = shuffledFiles.slice(0, perPage).map((file) => {
-      return {
-        url: file,
-        name: file,
-      };
+  try {
+    const images = await prisma.image.findMany({
+      take: perPage,
+      orderBy: {
+        // Postgres-specific random ordering
+        createdAt: "asc",
+      },
+      select: {
+        data: true,
+        mimeType: true,
+        filename: true,
+      },
     });
 
-    res.json({ images });
-  });
+    // Shuffle the results in memory
+    const shuffledImages = images
+      .sort(() => Math.random() - 0.5)
+      .map((image) => {
+        return {
+          url: `data:${image.mimeType};base64,${image.data.toString("base64")}`,
+          filename: image.filename,
+        };
+      });
+
+    res.json({ images: shuffledImages });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("An error occurred");
+  }
+});
+
+// app.post("/post", async (req, res) => {
+//   // TODO: Add authentication middleware
+//   try {
+//     if (!req.files || !req.files.image) {
+//       return res.status(400).json({ error: "No image file uploaded" });
+//     }
+
+//     const imageFile = req.files.image;
+//     const filename = imageFile.name;
+//     const mimeType = imageFile.mimetype || "application/octet-stream";
+
+//     // Check if image already exists
+//     const existingImage = await prisma.image.findFirst({
+//       where: { filename: filename },
+//     });
+
+//     if (existingImage) {
+//       return res.status(409).json({
+//         error: "An image with this filename already exists",
+//       });
+//     }
+
+//     await prisma.image.create({
+//       data: {
+//         filename: filename,
+//         title: path.parse(filename).name,
+//         data: imageFile.data,
+//         mimeType: mimeType,
+//       },
+//     });
+
+//     res.status(201).json({
+//       message: "Image uploaded successfully",
+//       filename: filename,
+//     });
+//   } catch (error) {
+//     console.error("Upload error:", error);
+//     res.status(500).json({
+//       error: "An error occurred during upload",
+//       details: error.message,
+//     });
+//   }
+// });
+
+// Cleanup function for Prisma
+process.on("beforeExit", async () => {
+  await prisma.$disconnect();
 });

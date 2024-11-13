@@ -1,9 +1,9 @@
 const gallery = document.getElementById("imageGallery");
-const perPage = 25;
+const perPage = 30;
 
 // Function to fetch and append images
 function fetchImages() {
-  fetch(`/random-images?perPage=${perPage}`)
+  fetch(`/many?perPage=${perPage}`)
     .then((response) => response.json())
     .then((data) => {
       renderGallery(data.images);

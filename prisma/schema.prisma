@@ -1,0 +1,20 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Image {
+  id          Int       @id @default(autoincrement())
+  title       String?   @db.VarChar(255)
+  description String?   @db.Text
+  filename    String    @db.VarChar(255)
+  data        Bytes
+  mimeType    String    @map("mime_type") @db.VarChar(127)
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt   DateTime  @default(now()) @map("updated_at") @db.Timestamptz
+  deletedAt   DateTime? @map("deleted_at") @db.Timestamptz
+} 
